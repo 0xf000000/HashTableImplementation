@@ -10,5 +10,7 @@ public interface IhashTable <Key,Value>{
 	public void putIntoHashtable(Key key, Value value); 
 	
 	public int SizeOfHashtable();
+	
+	
 
 }

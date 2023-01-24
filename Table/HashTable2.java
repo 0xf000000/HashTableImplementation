@@ -5,15 +5,6 @@ public class HashTable2 <Key,Value> implements IhashTable<Key,Value> {
 	private final int defaultSize = 16;
 	private  LinkedList<TableEntry<Key,Value>>[] LinkedListArray;
 	
-	
-	private void setLinkedListArray(LinkedList<TableEntry<Key,Value>>[] linkedList) {
-		this.LinkedListArray = linkedList;
-	}
-	
-	private LinkedList<TableEntry<Key,Value>>[] getLinkedListArray(){
-		return this.LinkedListArray;
-	}
-	
 	public HashTable2() {
 		prepareArray(defaultSize);
 		
@@ -24,6 +15,25 @@ public class HashTable2 <Key,Value> implements IhashTable<Key,Value> {
 	}
 	
 	
+	private void setLinkedListArray(LinkedList<TableEntry<Key,Value>>[] linkedList) {
+		this.LinkedListArray = linkedList;
+	}
+	
+	private LinkedList<TableEntry<Key,Value>>[] getLinkedListArray(){
+		return this.LinkedListArray;
+	}
+	
+	
+	
+	private int getHashedKey(Key key) {
+		return hashFunction(key) % SizeOfHashtableArray();
+	}
+	
+	
+	public int hashFunction(Key key) {
+		
+		return key.hashCode();
+	}
 	
 	
 	
@@ -50,29 +60,41 @@ public class HashTable2 <Key,Value> implements IhashTable<Key,Value> {
 	
 	@Override
 	public Value getDataFromHashtable(Key key) {
-		// TODO Auto-generated method stub
+		
 		int hashedKey = getHashedKey(key); 
 		
+		TableEntry<Key,Value> tableEntry = getTableEntry(key,hashedKey);
 		
+		if(checkIfTableEntryIsNull(tableEntry)) { return null;} 
 		
-		return getDataFromTableEntry(key,hashedKey);
+		return tableEntry.getValue();
 	}
 	
 	
-	private Value getDataFromTableEntry(Key key, int hashedKey) {
+	private boolean checkIfTableEntryIsNull(TableEntry<Key,Value> tableEntry){
+		return tableEntry == null;
+	}
+	
+	
+	private TableEntry<Key,Value> getTableEntry(Key key, int hashedKey) {
 		
 		LinkedList<TableEntry<Key,Value>> currentList = LinkedListArray[hashedKey];
 		
-		for(var entry : currentList) {if(key.hashCode() == entry.getKey().hashCode()) {  return entry.getValue(); }}
+		for(var entry : currentList) {
+			if(key.hashCode() == entry.getKey().hashCode()) {  return entry; }
+			}
 		
 		return null;
-		
 	}
+	
 
 	@Override
 	public void removeItemFromHashtable(Key key) {
-		// TODO Auto-generated method stub
+		int hashedKey = this.getHashedKey(key);
 		
+		TableEntry<Key,Value> tableEntry = getTableEntry(key, hashedKey);
+		
+
 	}
 
 	@Override
@@ -80,20 +102,12 @@ public class HashTable2 <Key,Value> implements IhashTable<Key,Value> {
 		
 		int hashedKey = getHashedKey(key);
 		
-		putTableEntryIntoList(hashedKey,key, value);
-	}
-	
-	
-	private void putTableEntryIntoList(int hashedKey,Key key,Value value) {
-		
 		LinkedList<TableEntry<Key,Value>> currentList =  LinkedListArray[hashedKey];
 		currentList.add(new TableEntry<Key,Value>(key,value));
 	}
 	
 	
-	private int getHashedKey(Key key) {
-		return key.hashCode() % SizeOfHashtableArray();
-	}
+	
 
 	
 	private int SizeOfHashtableArray() {
@@ -101,11 +115,16 @@ public class HashTable2 <Key,Value> implements IhashTable<Key,Value> {
 		return LinkedListArray.length; 
 	}
 	
-	
+	@Override
+	public int SizeOfHashtable() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	
 	private class TableEntry<Key,Value>{
+		
 		private Key key; 
 		private Value value;
 		
@@ -125,14 +144,5 @@ public class HashTable2 <Key,Value> implements IhashTable<Key,Value> {
 
 
 
-
-
-	@Override
-	public int SizeOfHashtable() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	
-	
-
 }
